@@ -1,0 +1,6 @@
+out*.dat
+*.out
+*.err
+*.optrpt
+*.o
+*.exe
