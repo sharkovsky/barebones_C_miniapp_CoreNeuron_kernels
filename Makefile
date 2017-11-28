@@ -6,13 +6,21 @@
 
 ## INTEL
 CC=icc
-CFLAGS=-O2 -g -qopt-report-phase=vec -qopt-streaming-stores never -restrict -unroll0 -qopenmp -DLIKWID_PERFMON
-INCFLAGS=-I. $(LIKWID_INC)
-LINKFLAGS=-lm -qopenmp $(LIKWID_LIB) -llikwid
+CFLAGS=-O2 -g -qopt-report-phase=vec -qopt-streaming-stores never -restrict -unroll0 -qopenmp
+INCFLAGS=-I.
+LINKFLAGS=-lm -qopenmp
 
-.PHONY: all clean
+.PHONY: all clean likwid
 
 all: kernels_app.exe
+
+likwid: CFLAGS+=-DLIKWID_PERFMON
+
+likwid:INCFLAGS+=$(LIKWID_INC)
+
+likwid:LINKFLAGS+=$(LIKWID_LIB) -llikwid
+
+likwid: all
 
 kernels_app.exe: main.o ProbAMPANMDA_EMS.o exp2syn.o nrnthread.o memory.o
 	$(CC) -o $@ $^ $(LINKFLAGS)
