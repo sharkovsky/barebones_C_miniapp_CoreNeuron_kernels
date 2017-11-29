@@ -61,10 +61,10 @@ void compute_wrapper(NrnThread *nt, int mech_id, char syn_type);
 
 int main(int argc, char *const argv[]) {
 
-    if (argc != 5) {
+    if (argc != 4) {
         printf("Wrong number of arguments! Usage:\n");
-        printf("%s <input file> <n times data is duplicated> <n iter main loop> <synapse type: p for ProbAMPA or e for Exp2Syn >\n", argv[0]);
-        printf("e.g. %s nrnthread.txt 1 100 a\n", argv[0]);
+        printf("%s <input file> <n times data is duplicated> <n iter main loop>\n", argv[0]);
+        printf("e.g. %s nrnthread.txt 1 100\n", argv[0]);
         return -1;
     }
 
@@ -90,26 +90,26 @@ int main(int argc, char *const argv[]) {
 
     int mech_type_to_find;
 
-    char c = argv[4][0];
-
-    // select the synapse type
-    switch( c ) {
-        case 'p' :
-            mech_type_to_find = 53;
-            break;
-        case 'e' :
-            mech_type_to_find = 10;
-            break;
-        default :
-            printf("error: unsupported synapses type %s, supported types are p,e\n", argv[4]);
-            return 1;
-            break;
-    }
+#ifdef PROBAMPA
+    mech_type_to_find = 53;
+#elif defined EXP2SYN
+    mech_type_to_find = 10;
+#else
+#error "Must define a synapse type. Supported types are -D PROBAMPA and -D EXP2SYN"
+#endif
 
     //duplicate the data
     NrnThread * ntu[NDUP];
     FILE * fp;
-    int flag_file_problem = 0;
+
+    // Try to open and close the file right away to test that everything is ok
+    // before we go into the paralle region
+    fp = fopen( argv[1], "r");
+    if ( fp == NULL ) {
+        printf("error opening file %s\n", argv[1]);
+        return -2;
+    }
+    fclose(fp);
 
 #pragma omp parallel
     {
@@ -118,23 +118,14 @@ int main(int argc, char *const argv[]) {
     for(i=0; i<NDUP; ++i ) {
 
         fp = fopen( argv[1], "r");
-        if ( fp == NULL ) {
-            printf("error opening file %s\n", argv[1]);
-            flag_file_problem = 1;
-        }
 
         ntu[i] = (NrnThread *) malloc( sizeof(NrnThread) );
-        //nrnthread_copy(nt, ntu[i]);
         nrnthread_read(fp, ntu[i]);
         fclose(fp);
     }
         LIKWID_MARKER_STOP("readInput");
-    }
+    } // close parallel region
     printf("Finished reading file\n");
-
-    if ( flag_file_problem ) {
-        return 1;
-    }
 
     // find index of the synapse
    int mech_id;
@@ -155,14 +146,11 @@ int main(int argc, char *const argv[]) {
 
 #pragma omp parallel for schedule(static, 1)
     for(i=0; i<NDUP; ++i ) {
-        switch( c ) {
-            case 'p' :
-                initmodel_ProbAMPANMDA_EMS(ntu[i], mech_id);
-                break;
-            case 'e' :
-                initmodel_Exp2Syn(ntu[i], mech_id);
-                break;
-        }
+#ifdef PROBAMPA
+        initmodel_ProbAMPANMDA_EMS(ntu[i], mech_id);
+#elif defined EXP2SYN
+        initmodel_Exp2Syn(ntu[i], mech_id);
+#endif
     }
 
     //output_states(ntu[0], mech_id);
@@ -176,10 +164,13 @@ int main(int argc, char *const argv[]) {
 #pragma omp for private(j) schedule(static, 1)
     for(i=0 ; i < NDUP; ++i) {
         for(j=0 ; j < NITER; ++j) {
-//            state_Exp2Syn(ntu[i] ,mech_id);
-//            current_Exp2Syn(ntu[i], mech_id);
+#ifdef PROBAMPA
 //            state_ProbAMPANMDA_EMS(ntu[i], mech_id);
             current_ProbAMPANMDA_EMS(ntu[i], mech_id);
+#elif defined EXP2SYN
+//            state_Exp2Syn(ntu[i] ,mech_id);
+//            current_Exp2Syn(ntu[i], mech_id);
+#endif
         }
     }
         LIKWID_MARKER_STOP("kernelloop");
@@ -195,29 +186,4 @@ int main(int argc, char *const argv[]) {
 
     LIKWID_MARKER_CLOSE;
     return 0;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-void compute_wrapper(NrnThread *nt, int mech_id, char syn_type) {
-//    switch( syn_type ) {
-//        case 'p' :
-//            state_ProbAMPANMDA_EMS(nt, mech_id);
-//            current_ProbAMPANMDA_EMS(nt, mech_id);
-//            break;
-//        case 'e' :
-//            state_Exp2Syn(nt ,mech_id);
-//            current_Exp2Syn(nt, mech_id);
-//            break;
-//    }
 }

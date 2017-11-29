@@ -1,12 +1,15 @@
+SYN_FLAG=-DPROBAMPA
+#SYN_FLAG=-DEXP2SYN
+
 ## GCC
 #CC=gcc
-#CFLAGS=-O2 -Wno-unused-result -g -ftree-vectorize -fopt-info-vec-optimized -DLIKWID_PERFMON -fopenmp
+#CFLAGS=-O2 -Wno-unused-result -g -ftree-vectorize -fopt-info-vec-optimized -DLIKWID_PERFMON -fopenmp $(SYN_FLAG)
 #INCFLAGS=-I. $(LIKWID_INC)
 #LINKFLAGS=-lm -fopenmp $(LIKWID_LIB) -llikwid
 
 ## INTEL
 CC=icc
-CFLAGS=-O2 -g -qopt-report-phase=vec -qopt-streaming-stores never -restrict -unroll0 -qopenmp
+CFLAGS=-O2 -g -qopt-report-phase=vec -qopt-streaming-stores never -restrict -unroll0 -qopenmp $(SYN_FLAG)
 INCFLAGS=-I.
 LINKFLAGS=-lm -qopenmp
 
