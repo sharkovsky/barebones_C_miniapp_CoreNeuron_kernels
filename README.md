@@ -23,7 +23,7 @@ Make sure you can compile openmp code and, if necessary, edit the Makefile to pr
 #### Using the likwid toolsuite
 
 The barebones_C_miniapp_CoreNeuron_kernels is already instrumented to allow for benchmarking and profiling using the
-[likwid marker API](https://github.com/RRZE-HPC/likwid/wiki/TutorialMarkerC).
+[likwid marker API](https://github.com/RRZE-HPC/likwid/wiki/TutorialMarkerC) from the [RRZE-HPC/likwid](https://github.com/RRZE-HPC/likwid) toolsuite.
 To enable the likwid marker API, build the `likwid` target instead by typing `make likwid` in your command line.
 
 #### Selecting different kernels
