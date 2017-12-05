@@ -153,6 +153,20 @@ int main(int argc, char *const argv[]) {
 #endif
     }
 
+
+    // 1. warm up caches
+    // with a single iteration
+#pragma omp for private(j) schedule(static, 1)
+    for(i=0 ; i < NDUP; ++i) {
+#ifdef PROBAMPA
+//            state_ProbAMPANMDA_EMS(ntu[i], mech_id);
+        current_ProbAMPANMDA_EMS(ntu[i], mech_id);
+#elif defined EXP2SYN
+//            state_Exp2Syn(ntu[i] ,mech_id);
+            current_Exp2Syn(ntu[i], mech_id);
+#endif
+    }
+
     //output_states(ntu[0], mech_id);
     printf("Finished initialization\n");
     printf("Executing %d iterations on %d data duplications\n", NITER, NDUP);
@@ -169,7 +183,7 @@ int main(int argc, char *const argv[]) {
             current_ProbAMPANMDA_EMS(ntu[i], mech_id);
 #elif defined EXP2SYN
 //            state_Exp2Syn(ntu[i] ,mech_id);
-//            current_Exp2Syn(ntu[i], mech_id);
+            current_Exp2Syn(ntu[i], mech_id);
 #endif
         }
     }

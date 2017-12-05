@@ -47,7 +47,10 @@ By default, the `current` function of the `ProbAMPANMDA_EMS` synapse is selected
         }
     }
 ```
-2. if you also have changed the synapse type, you must edit the `SYN_FLAG` variable in the `Makefile` to account for this change.
+2. rerun make and, if necessary, define the correct value for `SYN_FLAG` as such:
+```bash
+make SYN_FLAG=-DEXP2SYN
+```
 
 ## RUN
 

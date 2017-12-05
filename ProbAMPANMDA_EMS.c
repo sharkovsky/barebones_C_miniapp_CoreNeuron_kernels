@@ -5,6 +5,10 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include <omp.h>
+
+#include "myexp.h"
+
 #include "common/memory/nrnthread.h"
 #include "ProbAMPANMDA_EMS.h"
 
@@ -99,7 +103,7 @@ int  state (NrnThread* _nt, int mech_id) {
     double * restrict _p = _ml.data;
     int _iml;
 
-    // #pragma omp for
+    #pragma omp simd
     for (_iml = 0; _iml < _cntml; ++_iml) {
     A_AMPA = A_AMPA + (1. - exp(dt*(( 1.0 ) / tau_r_AMPA)))*(- ( 0.0 ) / ( ( 1.0 ) / tau_r_AMPA ) - A_AMPA) ;
     B_AMPA = B_AMPA + (1. - exp(dt*(( 1.0 ) / tau_d_AMPA)))*(- ( 0.0 ) / ( ( 1.0 ) / tau_d_AMPA ) - B_AMPA) ;
@@ -131,6 +135,7 @@ void current(NrnThread* _nt, int mech_id){
     int * _ni = _ml.nodeindices;
     _ppvar = _ml.pdata;
 
+#pragma omp simd
     for (_iml = 0; _iml < _cntml; ++_iml) {
         _nd_idx = _ni[_iml];
         _v = _vec_v[_nd_idx];
@@ -151,6 +156,7 @@ void current(NrnThread* _nt, int mech_id){
 
         _vec_shadow_rhs[_iml] = _lrhs;
         _vec_shadow_d[_iml] = _lg;
+
     }
 
     /*

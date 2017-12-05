@@ -1,4 +1,4 @@
-SYN_FLAG=-DPROBAMPA
+SYN_FLAG?=-DPROBAMPA
 #SYN_FLAG=-DEXP2SYN
 
 ## GCC
@@ -25,8 +25,11 @@ likwid:LINKFLAGS+=$(LIKWID_LIB) -llikwid
 
 likwid: all
 
-kernels_app.exe: main.o ProbAMPANMDA_EMS.o exp2syn.o nrnthread.o memory.o
+kernels_app.exe: main.o ProbAMPANMDA_EMS.o myexp.o exp2syn.o nrnthread.o memory.o
 	$(CC) -o $@ $^ $(LINKFLAGS)
+
+myexp.o: myexp.c
+	$(CC) $(CFLAGS) $(INCFLAGS) -c $^
 
 ProbAMPANMDA_EMS.o: ProbAMPANMDA_EMS.c
 	$(CC) $(CFLAGS) $(INCFLAGS) -c $^

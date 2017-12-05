@@ -237,7 +237,7 @@ int nrnthread_read(FILE *hFile, NrnThread *nt) {
         }
 
         if (ml->szdp){
-            printf("Reading pdata because szdp = %d\n", ml->szdp);
+            //printf("Reading pdata because szdp = %d\n", ml->szdp);
             ml->pdata = (int*)ecalloc_align(ml->nodecount_pad*ml->szdp, NRN_SOA_BYTE_ALIGN, sizeof(int));
             read_nrnthread_iarray(hFile, ml->pdata, ml->nodecount_pad*ml->szdp);
         }
