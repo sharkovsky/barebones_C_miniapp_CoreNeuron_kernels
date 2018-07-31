@@ -25,7 +25,7 @@ likwid:LINKFLAGS+=$(LIKWID_LIB) -llikwid
 
 likwid: all
 
-kernels_app.exe: main.o ProbAMPANMDA_EMS.o myexp.o exp2syn.o nrnthread.o memory.o
+kernels_app.exe: main.o ProbAMPANMDA_EMS.o myexp.o exp2syn.o NaTs2_t.o nrnthread.o memory.o
 	$(CC) -o $@ $^ $(LINKFLAGS)
 
 myexp.o: myexp.c
@@ -35,6 +35,9 @@ ProbAMPANMDA_EMS.o: ProbAMPANMDA_EMS.c
 	$(CC) $(CFLAGS) $(INCFLAGS) -c $^
 
 exp2syn.o: exp2syn.c
+	$(CC) $(CFLAGS) $(INCFLAGS) -c $^
+
+NaTs2_t.o: NaTs2_t.c
 	$(CC) $(CFLAGS) $(INCFLAGS) -c $^
 
 main.o: main.c

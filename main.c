@@ -35,6 +35,7 @@
 
 #include "ProbAMPANMDA_EMS.h"
 #include "exp2syn.h"
+#include "NaTs2_t.h"
 
 #ifdef LIKWID_PERFMON
 #include <likwid.h>
@@ -94,8 +95,10 @@ int main(int argc, char *const argv[]) {
     mech_type_to_find = 53;
 #elif defined EXP2SYN
     mech_type_to_find = 10;
+#elif defined NATS2_T
+    mech_type_to_find = 52;
 #else
-#error "Must define a synapse type. Supported types are -D PROBAMPA and -D EXP2SYN"
+#error "Must define a mechanism type. Supported types are -D PROBAMPA, -D EXP2SYN, -D NATS2_T"
 #endif
 
     //duplicate the data
@@ -150,6 +153,8 @@ int main(int argc, char *const argv[]) {
         initmodel_ProbAMPANMDA_EMS(ntu[i], mech_id);
 #elif defined EXP2SYN
         initmodel_Exp2Syn(ntu[i], mech_id);
+#elif defined NATS2_T
+        initmodel_NaTs2_t(ntu[i], mech_id);
 #endif
     }
 
@@ -164,6 +169,9 @@ int main(int argc, char *const argv[]) {
 #elif defined EXP2SYN
 //            state_Exp2Syn(ntu[i] ,mech_id);
             current_Exp2Syn(ntu[i], mech_id);
+#elif defined NATS2_T
+            state_NaTs2_t(ntu[i] ,mech_id);
+//            current_Exp2Syn(ntu[i], mech_id);
 #endif
     }
 
@@ -184,6 +192,9 @@ int main(int argc, char *const argv[]) {
 #elif defined EXP2SYN
 //            state_Exp2Syn(ntu[i] ,mech_id);
             current_Exp2Syn(ntu[i], mech_id);
+#elif defined NATS2_T
+            state_NaTs2_t(ntu[i] ,mech_id);
+//            current_Exp2Syn(ntu[i], mech_id);
 #endif
         }
     }
