@@ -6,7 +6,7 @@ This miniapp was developed by Francesco Cremonesi as a barebones version of the 
 The purpose of the original Neuronm(ini)app(lication)library is to reproduce the algorithms of the 
 main software of the BBP as a collection of mini-apps.
 
-The barebones_C_miniapp_CoreNeuron_kernels instead is solely focused on the synapse kernels.
+The barebones_C_miniapp_CoreNeuron_kernels instead is solely focused on a small subset of kernels.
 The purpose of this duplication is to avoid any overhead coming form the original BlueBrain/neuromapp
 infrastructure, and to allow the author to change and instrument the kernel code freely.
 
@@ -14,6 +14,8 @@ infrastructure, and to allow the author to change and instrument the kernel code
 
 To build barebones_C_miniapp_CoreNeuron_kernels, edit the Makefile with the correct compiler and flags combination, 
 then type `make` in your command line.
+The barebones_C_miniapp only supports executing a single kernel type at a time, and must be rebuilt if one wishes to use a different kernel.
+For instructions on selecting which kernel is built into the app, refer to the [Section](#selecting-different-kernels) below.
 
 #### openmp dependency
 
@@ -28,9 +30,10 @@ To enable the likwid marker API, build the `likwid` target instead by typing `ma
 
 #### Selecting different kernels
 
-For now, two synapse types are supported:
+For now, two synapse types and one ion channel type are supported:
 1. Exp2Syn is a simple static synapse model with only two state variables;
-2. ProbAMPANMDA_EMS is a more complex synapse model with short-term plasticity dynamics, that is modeled using four state variables.
+2. ProbAMPANMDA_EMS is a more complex synapse model with short-term plasticity dynamics, that is modeled using four state variables;
+3. NaTs2_t is a sodium ion channel with two state variables.
 
 By default, the `current` function of the `ProbAMPANMDA_EMS` synapse is selected. If you want to change this behaviour, you must do two things:
 1. comment/uncomment the relevant lines in the `main.c` file
@@ -81,6 +84,8 @@ Finished initialization
 Executing 1 iterations on 1 data duplications
 Finished computing
 ```
+
+If you wish to create a custom dataset, you may do so using the [dumpthread](/BlueBrain/CoreNeuron/tree/dumpthread) branch of CoreNeuron.
 
 #### likwid benchmarking and profiling
 
